@@ -1,28 +1,44 @@
-//
-// build.gradle in TeamCode
-//
-// Most of the definitions for building your module reside in a common, shared
-// file 'build.common.gradle'. Being factored in this way makes it easier to
-// integrate updates to the FTC into your code. If you really need to customize
-// the build definitions, you can place those customizations in this file, but
-// please think carefully as to whether such customizations are really necessary
-// before doing so.
-
-
-// Custom definitions may go here
-
-// Include common definitions from above.
-apply from: '../build.common.gradle'
-apply from: '../build.dependencies.gradle'
+apply plugin: 'com.android.application'
+// ADD THIS for Kotlin support
+apply plugin: 'org.jetbrains.kotlin.android'
 
 android {
     namespace = 'org.firstinspires.ftc.teamcode'
 
+    // REQUIRED: Panels needs SDK 35
+    compileSdk 35
+
+    defaultConfig {
+        minSdk 24
+        targetSdk 34
+        versionCode 1
+        versionName "1.0"
+    }
+
+    // REQUIRED: Fixes "More than one file was found with OS independent path" errors
     packagingOptions {
         jniLibs.useLegacyPackaging true
+    }
+
+    kotlinOptions {
+        jvmTarget = '1.8'
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
     }
 }
 
 dependencies {
     implementation project(':FtcRobotController')
+
+    // ADD THIS: The Panels Library
+    // Replace '1.0.12' with the version listed in the docs if it has changed
+    implementation "com.bylazar:fullpanels:1.0.12"
+
+    // Standard FTC dependencies (usually already here)
+    implementation 'org.firstinspires.ftc:RobotCore:9.0.1'
+    implementation 'org.firstinspires.ftc:Hardware:9.0.1'
+    implementation 'org.firstinspires.ftc:FtcCommon:9.0.1'
 }
