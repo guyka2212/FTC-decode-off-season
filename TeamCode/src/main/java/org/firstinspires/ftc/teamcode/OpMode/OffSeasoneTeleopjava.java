@@ -5,15 +5,15 @@ import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.har
 
 import com.bylazar.configurables.annotations.Configurable;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
+import org.firstinspires.ftc.teamcode.Subsystems.IntakeSubsystem.IntakeVars;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
-
 import kotlin.jvm.JvmField;
 
 @TeleOp
 @Configurable
 public class OffSeasoneTeleopjava {
-    private DcMotor frontLeftMotor, frontRightMotor, backLeftMotor, backRightMotor;
+    private DcMotor frontLeftMotor, frontRightMotor, backLeftMotor, backRightMotor, inTakeMotor;
 
     @JvmField double maxSpeed = 1.0;
 
@@ -22,16 +22,19 @@ public class OffSeasoneTeleopjava {
         frontRightMotor = hardwareMap.get(DcMotor.class, "fr");
         backRightMotor = hardwareMap.get(DcMotor.class, "br");
         backLeftMotor = hardwareMap.get(DcMotor.class, "bl");
+        inTakeMotor = hardwareMap.get(DcMotor.class, "inm");
 
         frontLeftMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         backLeftMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         frontRightMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         backRightMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        inTakeMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         frontRightMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         backRightMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         frontLeftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         backLeftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        inTakeMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         RevHubOrientationOnRobot RevOrientation = new RevHubOrientationOnRobot(
                 RevHubOrientationOnRobot.LogoFacingDirection.DOWN,
@@ -60,5 +63,17 @@ public class OffSeasoneTeleopjava {
 
     public void loop() {
         drive(-gamepad1.left_stick_y, gamepad1.left_stick_x, gamepad1.right_stick_x);
+
+        double inTakePowern = 0;
+        if (gamepad1.a) {
+            inTakePowern = IntakeVars.intakePower;
+        } else if (gamepad1.x) {
+            inTakePowern = IntakeVars.outtakePower;
+        }
+        else {
+            inTakePowern = 0;
+        }
+        inTakeMotor.setPower(inTakePowern);
+
     }
 }
